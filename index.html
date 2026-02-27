@@ -1,60 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File System Recovery</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File System Recovery</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Segoe UI',sans-serif;
+}
+
+body{
+min-height:100vh;
+background:linear-gradient(135deg,#667eea,#764ba2);
+display:flex;
+justify-content:center;
+align-items:center;
+color:white;
+transition:0.3s;
+}
+
+.dark{
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+}
+
+.container{
+width:95%;
+max-width:1000px;
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(15px);
+padding:30px;
+border-radius:20px;
+box-shadow:0 15px 35px rgba(0,0,0,0.3);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+font-size:28px;
+}
+
+input,textarea{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:none;
+border-radius:8px;
+outline:none;
+}
+
+textarea{
+resize:none;
+height:80px;
+}
+
+button{
+padding:8px 14px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin:5px 3px;
+font-weight:bold;
+transition:0.3s;
+}
+
+.btn-primary{background:#00c6ff;color:white;}
+.btn-danger{background:#ff4b5c;color:white;}
+.btn-success{background:#00b894;color:white;}
+.btn-warning{background:#f39c12;color:white;}
+.btn-dark{background:#2d3436;color:white;}
+
+button:hover{
+transform:scale(1.05);
+opacity:0.9;
+}
+
+table{
+width:100%;
+margin-top:10px;
+border-collapse:collapse;
+background:rgba(255,255,255,0.1);
+border-radius:10px;
+overflow:hidden;
+}
+
+th,td{
+padding:10px;
+text-align:left;
+}
+
+th{
+background:rgba(0,0,0,0.3);
+}
+
+.section{
+margin-top:20px;
+}
+
+.hidden{display:none;}
+
+.top-buttons{
+display:flex;
+justify-content:space-between;
+flex-wrap:wrap;
+margin-bottom:10px;
+}
+
+.storage-box{
+margin-top:10px;
+font-weight:bold;
+}
+
+.footer{
+text-align:center;
+margin-top:20px;
+font-size:14px;
+opacity:0.8;
+}
+
+</style>
 </head>
+
 <body>
-    <div id="login-container" class="container">
-        <h1>Welcome Back</h1>
-        <form id="login-form">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            <button type="submit">Login</button>
-        </form>
-    </div>
 
-    <div id="dashboard-container" class="container hidden">
-        <header>
-            <h1>File System Recovery</h1>
-            <button id="logout-btn">Logout</button>
-        </header>
-        <section class="controls">
-            <button id="create-file-btn">Create File</button>
-            <button id="show-bin-btn">Recycle Bin</button>
-            <button id="empty-bin-btn">Recover Storage</button>
-            <div id="storage-info">Used: 0 bytes</div>
-        </section>
-        <section class="file-list">
-            <table>
-                <thead>
-                    <tr><th>Name</th><th>Size</th><th>Actions</th></tr>
-                </thead>
-                <tbody id="files-tbody"></tbody>
-            </table>
-        </section>
-        <section id="bin-section" class="hidden">
-            <h2>Recycle Bin</h2>
-            <table>
-                <thead><tr><th>Name</th><th>Size</th><th>Actions</th></tr></thead>
-                <tbody id="bin-tbody"></tbody>
-            </table>
-        </section>
-    </div>
+<div class="container">
 
-    <!-- create/edit modal -->
-    <div id="modal" class="modal hidden">
-        <div class="modal-content">
-            <h2 id="modal-title"></h2>
-            <input type="text" id="modal-filename" placeholder="File Name">
-            <textarea id="modal-content" placeholder="File Content"></textarea>
-            <button id="modal-save-btn">Save</button>
-            <button id="modal-cancel-btn">Cancel</button>
-        </div>
-    </div>
+<h1>🚀 File System Recovery & Optimization</h1>
 
-    <script src="js/script.js"></script>
+<div id="loginSection">
+<h3>Login</h3>
+<input type="text" id="username" placeholder="Enter Username">
+<input type="password" id="password" placeholder="Enter Password">
+<button class="btn-primary" onclick="login()">Login</button>
+</div>
+
+<div id="dashboard" class="hidden">
+
+<div class="top-buttons">
+<div>
+<button class="btn-dark" onclick="toggleDark()">🌙 Dark Mode</button>
+<button class="btn-danger" onclick="logout()">Logout</button>
+</div>
+</div>
+
+<div class="section">
+<h3>Create File</h3>
+<input type="text" id="fileName" placeholder="File Name">
+<textarea id="fileContent" placeholder="File Content"></textarea>
+<button class="btn-success" onclick="createFile()">Save File</button>
+</div>
+
+<div class="storage-box">
+📊 Storage Used: <span id="storage">0</span> bytes
+</div>
+
+<div class="section">
+<h3>📁 Files</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Size</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="fileList"></tbody>
+</table>
+</div>
+
+<div class="section">
+<h3>🗑 Recycle Bin</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Size</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="binList"></tbody>
+</table>
+</div>
+
+<div class="footer">
+© 2026 File Recovery System | Designed by You 💻
+</div>
+
+</div>
+</div>
+
+<script>
+
+let files = JSON.parse(localStorage.getItem("files")) || [];
+let bin = JSON.parse(localStorage.getItem("bin")) || [];
+
+function login(){
+if(username.value && password.value){
+loginSection.classList.add("hidden");
+dashboard.classList.remove("hidden");
+render();
+}else{
+alert("Enter credentials");
+}
+}
+
+function logout(){
+location.reload();
+}
+
+function createFile(){
+let name=fileName.value.trim();
+let content=fileContent.value;
+
+if(!name) return alert("Enter file name");
+
+let size=content.length;
+
+files.push({name,content,size});
+localStorage.setItem("files",JSON.stringify(files));
+
+fileName.value="";
+fileContent.value="";
+
+render();
+}
+
+function deleteFile(index){
+bin.push(files[index]);
+files.splice(index,1);
+localStorage.setItem("files",JSON.stringify(files));
+localStorage.setItem("bin",JSON.stringify(bin));
+render();
+}
+
+function restoreFile(index){
+files.push(bin[index]);
+bin.splice(index,1);
+localStorage.setItem("files",JSON.stringify(files));
+localStorage.setItem("bin",JSON.stringify(bin));
+render();
+}
+
+function permanentlyDelete(index){
+bin.splice(index,1);
+localStorage.setItem("bin",JSON.stringify(bin));
+render();
+}
+
+function render(){
+fileList.innerHTML="";
+binList.innerHTML="";
+let total=0;
+
+files.forEach((file,index)=>{
+total+=file.size;
+fileList.innerHTML+=`
+<tr>
+<td>${file.name}</td>
+<td>${file.size}</td>
+<td>
+<button class="btn-danger" onclick="deleteFile(${index})">Delete</button>
+</td>
+</tr>`;
+});
+
+bin.forEach((file,index)=>{
+binList.innerHTML+=`
+<tr>
+<td>${file.name}</td>
+<td>${file.size}</td>
+<td>
+<button class="btn-warning" onclick="restoreFile(${index})">Restore</button>
+<button class="btn-danger" onclick="permanentlyDelete(${index})">Delete</button>
+</td>
+</tr>`;
+});
+
+storage.innerText=total;
+}
+
+function toggleDark(){
+document.body.classList.toggle("dark");
+}
+
+</script>
+
 </body>
 </html>
