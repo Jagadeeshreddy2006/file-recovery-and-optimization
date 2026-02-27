@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File System Recovery</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="login-container" class="container">
+        <h1>Welcome Back</h1>
+        <form id="login-form">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div id="dashboard-container" class="container hidden">
+        <header>
+            <h1>File System Recovery</h1>
+            <button id="logout-btn">Logout</button>
+        </header>
+        <section class="controls">
+            <button id="create-file-btn">Create File</button>
+            <button id="show-bin-btn">Recycle Bin</button>
+            <button id="empty-bin-btn">Recover Storage</button>
+            <div id="storage-info">Used: 0 bytes</div>
+        </section>
+        <section class="file-list">
+            <table>
+                <thead>
+                    <tr><th>Name</th><th>Size</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="files-tbody"></tbody>
+            </table>
+        </section>
+        <section id="bin-section" class="hidden">
+            <h2>Recycle Bin</h2>
+            <table>
+                <thead><tr><th>Name</th><th>Size</th><th>Actions</th></tr></thead>
+                <tbody id="bin-tbody"></tbody>
+            </table>
+        </section>
+    </div>
+
+    <!-- create/edit modal -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="modal-title"></h2>
+            <input type="text" id="modal-filename" placeholder="File Name">
+            <textarea id="modal-content" placeholder="File Content"></textarea>
+            <button id="modal-save-btn">Save</button>
+            <button id="modal-cancel-btn">Cancel</button>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
